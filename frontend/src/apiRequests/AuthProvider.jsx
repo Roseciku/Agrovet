@@ -30,6 +30,8 @@ function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
+
+    try{
     const response = await fetch("http://localhost:5500/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -40,16 +42,44 @@ function AuthProvider({ children }) {
     if (response.ok && data.user) {
       setUser(data.user);
       alert("Login successful");
+      return data.user;
     } else {
-      alert("Login failed");
-    }
-    return data.user;
-  };
+      alert(data.message || "Login failed");
+      return null
+    }  
+  } catch(error){
 
-  if (loading) return <div>Loading...</div>;
+    alert("Network error. Please try again later.");
+    return null;
+  }
+  
+}
+
+  const logOut = async () =>{
+   
+    try {
+    const response = await fetch("http://localhost:5500/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+
+    if (response.ok || response.status === 204) {
+      setUser(null); // Clear user context
+      localStorage.removeItem("accessToken"); // Optional: remove if you store access tokens
+      alert("Logout successful");
+    } else {
+      alert("Logout failed");
+    }
+  } catch (error) {
+    console.error("Logout error:", error);
+    alert("An error occurred during logout");
+  }
+  
+  }
 
   return (
-    <AuthContext.Provider value={{ user, login }}>
+    <AuthContext.Provider value={{ user, login , logOut}}>
       {children}
     </AuthContext.Provider>
   );

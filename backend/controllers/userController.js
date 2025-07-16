@@ -157,3 +157,36 @@ try {
 }
 
 }
+
+exports.logoutUser = async (req, res) => {
+  
+  //verify if jwt cookie exist in the request
+  const cookies = req.cookies;
+  if(!cookies?.jwt){
+    
+    return res.status(200).json({ message: "No token to clear, already logged out" });
+
+};
+
+  const refreshToken = cookies.jwt;
+
+  try {
+    //Is refreshToken in db?
+    const[tokens]= await db.execute('SELECT * FROM refresh_tokens WHERE refreshToken =?', [refreshToken])
+    if(tokens.length === 0){
+      res.clearCookie('jwt',{httpOnly:true, sameSite: 'None', secure:true});
+      return res.status(200).json({ message: "Token not found, cookie cleared" });
+    }
+
+    //Delete refreshtokens in db
+    await db.execute('DELETE FROM refresh_tokens WHERE refreshToken=?',[refreshToken])
+  
+    res.clearCookie('jwt',{httpOnly:true, sameSite: 'None', secure:true});
+   return res.status(200).json({ message: "Logged out successfully" })
+  
+  } catch (error) {
+   console.error('Error during logout:', error);
+   return res.status(500);//Internal server error 
+  }
+};
+

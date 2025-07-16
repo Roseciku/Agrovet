@@ -10,7 +10,7 @@ function ProductsPage() {
   const { addToCart } = useContext(CartContext);
 
   const [selectedCategory, setSelectedCategory] = useState(null);
-//useeffect is used when you want to handle component lifecycle.
+  const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
 
@@ -39,8 +39,8 @@ function ProductsPage() {
 
   return (
     <div>
-      <ProductsNavbar setSelectedCategory={setSelectedCategory}   />
-      <AllProducts  selectedCategory={selectedCategory}/>
+      <ProductsNavbar setSelectedCategory={setSelectedCategory} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <AllProducts  selectedCategory={selectedCategory} searchTerm={searchTerm}/>
     </div>
   );
 }

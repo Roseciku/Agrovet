@@ -1,10 +1,14 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { ShoppingCart, ChevronDown, Search, User, Menu, X } from "lucide-react";
 import { CartContext } from "../apiRequests/CartProvider";
+import { AuthContext } from "../apiRequests/AuthProvider";
 import { useContext, useState } from "react";
 
-function ProductsNavbar({ setSelectedCategory }) {
+function ProductsNavbar({ setSelectedCategory, searchTerm, setSearchTerm }) {
+  const navigate = useNavigate();
+  const { logOut } = useContext(AuthContext);
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -22,7 +26,7 @@ function ProductsNavbar({ setSelectedCategory }) {
   return (
     <nav className="bg-farmGreen py-4">
       <div className="relative flex justify-between items-center bg-white h-16 rounded-full w-[80%] mx-auto px-7 shadow-lg">
-        <h1 className="font-bold text-xl md:text-2xl  text-farmGreen">
+        <h1 className="font-bold sm:text-lg md:text-xl lg:text-xl text-farmGreen">
           FarmMate Agrovet
         </h1>
         <div className="relative  w-[40%]">
@@ -30,6 +34,8 @@ function ProductsNavbar({ setSelectedCategory }) {
             type="text"
             placeholder="Search Products ..."
             className="px-2 w-full h-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-farmGreen"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div>
@@ -105,7 +111,20 @@ function ProductsNavbar({ setSelectedCategory }) {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/signin" className="hover:text-farmGreen">
+              <button
+                onClick={ () => {
+                  
+                  logOut(); // Calling the logout function
+                  
+                   navigate("/"); // Redirect after logout
+                }}
+                className="hover:text-farmGreen"
+              >
+                Logout
+              </button>
+            </li>
+            <li>
+              <NavLink to="/login" className="hover:text-farmGreen">
                 <User size={20} />
               </NavLink>
             </li>
@@ -231,6 +250,19 @@ function ProductsNavbar({ setSelectedCategory }) {
                 >
                   Sign Up
                 </NavLink>
+              </li>
+              <li>
+                <button
+                onClick={ () => {
+                  
+                  logOut(); // Calling the logout function
+                  
+                   navigate("/"); // Redirect after logout
+                }}
+                className="hover:text-farmGreen"
+              >
+                Logout
+              </button>
               </li>
               <li>
                 <NavLink

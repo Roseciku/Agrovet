@@ -82,8 +82,8 @@ function ProductSection() {
   // If we put currentIndex inside [currentIndex], a new timer would start every time the slide changes, creating too many timers running at the same time!
 
   return (
-    <div className="bg-farmGreen py-12 mt-6">
-      <h1 className="text-center font-poppins text-3xl text-white font-bold mb-6">
+    <div className="bg-farmGreen py-12 mt-2 mb-0">
+      <h1 className="text-center font-poppins text-xl md:text-2xl lg:text-3xl text-white font-bold mb-6">
         Our Featured Products
       </h1>
       <div className="relative m-auto">
@@ -95,7 +95,7 @@ function ProductSection() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -direction * 100, opacity: 0 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="w-full sm:w-[80%] md:w-[50%] lg:w-[60%] h-[300px] md:h-[500px] lg:h-[600px] flex-shrink-0 overflow-hidden shadow-md"
+              className="w-full px-2 sm:w-[80%] md:w-[50%] lg:w-[60%] h-[300px] md:h-[500px] lg:h-[600px] flex-shrink-0 overflow-hidden shadow-md"
             >
               {/* <div className="w-[60%] h-[600px] flex-shrink-0 overflow-hidden shadow-md"> */}
               <img
@@ -153,7 +153,10 @@ function ProductSection() {
       <button className=" flex mx-auto mt-5 justify-center items-center text-center font-poppins cursor-pointer px-5 bg-brightYellow w-[200px] h-[30px] text-white text-lg">
         Shop Now
       </button>
+
+      
     </div>
+    
   );
 }
 

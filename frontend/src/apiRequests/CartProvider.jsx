@@ -28,6 +28,15 @@ const CartProvider = ({ children }) => {
         const data = await response.json();
       setCart(data.cart);
         console.log("Fetched cart:", data.cart);
+
+        // Check for productToAdd
+      const productToAdd = localStorage.getItem("productToAdd");
+      if (productToAdd) {
+        const parsedProduct = JSON.parse(productToAdd);
+        console.log("Auto-adding product after login:", parsedProduct);
+        await addToCart(parsedProduct);
+        localStorage.removeItem("productToAdd");
+      }
       } catch (error) {
         console.error("Failed to fetch cart:", error);
         setCart([]); // Prevent loading loop
@@ -49,21 +58,14 @@ const CartProvider = ({ children }) => {
  console.log({user})
 
     if (!user) {
-      // Redirect to login and include product in query
-      navigate(`/login?redirect=add-to-cart&product_id=${product.product_id}`);
-      return;
+      // Save the current URL and product to localStorage
+  localStorage.setItem("redirectAfterLogin", window.location.pathname + window.location.search);
+  localStorage.setItem("productToAdd", JSON.stringify(product));
+
+  navigate("/login");
+  return;
     }
 
-    // const existingItem = cart.find(
-    //   (item) => item.product_id === product.product_id
-    // );
-    // console.log(existingItem)
-
-    // if (existingItem) {
-    //   // Optionally, just increase quantity if item already exists
-    //   await updateQuantity(existingItem.cart_id, existingItem.quantity + 1);
-    //   return;
-    // }
     try {
       const response = await fetch("http://localhost:5500/api/add", {
         method: "POST",
@@ -118,11 +120,20 @@ const updateQuantity = async (cart_id, quantity) => {
     } catch (error) {
       console.error("Failed to remove item from cart:", error);
     }
+
   };
+
+  const subtotal = cart.reduce(
+  (acc, item) => acc + item?.price * item?.quantity,
+  0
+);
+const shippingFee = 5.0;
+const tax = subtotal * 0.1;
+const orderTotal = subtotal + shippingFee + tax;
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, updateQuantity, loading }}
+      value={{ cart, addToCart, removeFromCart, updateQuantity, loading, subtotal,shippingFee,tax, orderTotal }}
     >
       {children}
     </CartContext.Provider>

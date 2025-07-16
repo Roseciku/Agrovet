@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
-function Navbar() {
+
+function Navbar({onLinkClick}) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -14,25 +15,20 @@ function Navbar() {
       < div className="relative flex justify-between bg-white items-center h-16 mx-auto rounded-full w-[90%] lg:w-[70%] mt-6 mb-6 px-7">
         <h1 className="font-bold text-xl md:text-3xl">FarmMate Agrovet</h1>
         <div>
-          <ul className="hidden lg:flex gap-3 list-none font-semibold text-lg">
-            <li>
-              <NavLink to="/">Home</NavLink>
-            </li>
-            <li>
-              <NavLink>About</NavLink>
-            </li>
-            <li>
-              <NavLink>Contacts</NavLink>
-            </li>
-            <li>
+          <ul className="hidden lg:flex gap-4 list-none font-semibold text-lg">
+            <button>
+              Home
+            </button>
+            <button onClick={onLinkClick} className="hover:text-farmGreen">
+              About
+            </button>
+            <button onClick={onLinkClick} className="hover:text-farmGreen">
+              Contacts
+            </button>
+            <li className="hover:text-farmGreen">
               <NavLink to="/products">Shop</NavLink>
             </li>
-            <li>
-              <NavLink to="/signup">SignUp</NavLink>
-            </li>
-            <li>
-              <NavLink to="/login">Login</NavLink>
-            </li>
+            
           </ul>
         </div>
 
@@ -52,34 +48,30 @@ function Navbar() {
             </div>
 
             <ul className="flex flex-col gap-4 font-semibold text-lg">
-              <li>
-                <NavLink to="/" onClick={toggleMenu}>
+              <button onClick={toggleMenu} className="hover:text-farmGreen">
+            
                   Home
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/about" onClick={toggleMenu}>
+                
+              </button>
+              <button className="hover:text-farmGreen" onClick={()=> {
+                toggleMenu();
+                onLinkClick();
+              }}>
+                 
                   About
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/contacts" onClick={toggleMenu}>
+               
+              </button>
+              <button className="hover:text-farmGreen" onClick={()=> {
+                toggleMenu();
+                onLinkClick();
+              }}>
+                
                   Contacts
-                </NavLink>
-              </li>
-              <li>
+                
+              </button>
+              <li className="hover:text-farmGreen">
                 <NavLink to="/products" onClick={toggleMenu}>
                   Shop
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/signup" onClick={toggleMenu}>
-                  Sign Up
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/login" onClick={toggleMenu}>
-                  Login
                 </NavLink>
               </li>
             </ul>

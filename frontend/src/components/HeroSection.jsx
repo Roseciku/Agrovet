@@ -1,4 +1,5 @@
-import React from "react";
+import { NavLink } from "react-router-dom";
+
 
 function HeroSection() {
   return (
@@ -15,6 +16,9 @@ function HeroSection() {
           From fertilizers, animal feeds to farm tools, <br /> get everything
           you need to boost productivity and maximize.
         </p>
+         <button className=" flex mx-auto mt-[100px] justify-center items-center text-center font-poppins cursor-pointer px-5 bg-brightYellow w-[300px] h-[40px] text-white text-lg rounded-2xl">
+        <NavLink to= "/products">Shop Now</NavLink>
+      </button>
       </div>
     </div>
   );
