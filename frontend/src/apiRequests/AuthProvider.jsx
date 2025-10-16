@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 
+const apiUrl = import.meta.env.VITE_API_URL;
 export const AuthContext = createContext();
 
 function AuthProvider({ children }) {
@@ -11,7 +12,7 @@ function AuthProvider({ children }) {
   useEffect(() => {
     const refresh = async () => {
       try {
-        const response = await fetch("http://localhost:5500/api/refresh", {
+        const response = await fetch(`${apiUrl}/api/refresh`, {
           method: "GET",
           credentials: "include", // send cookies (refresh token)
         });
@@ -40,7 +41,7 @@ function AuthProvider({ children }) {
   // Login
   const login = async (email, password) => {
     try {
-      const response = await fetch("http://localhost:5500/api/login", {
+      const response = await fetch(`${apiUrl}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // allow refresh cookie
@@ -68,7 +69,7 @@ function AuthProvider({ children }) {
   // ✅ Logout
   const logOut = async () => {
     try {
-      const response = await fetch("http://localhost:5500/api/logout", {
+      const response = await fetch(`${apiUrl}/api/logout`, {
         method: "POST",
         credentials: "include",
       });

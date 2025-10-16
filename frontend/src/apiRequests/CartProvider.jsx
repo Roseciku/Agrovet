@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./AuthProvider";
 
+const apiUrl = import.meta.env.VITE_API_URL;
 // Create CartContext
 export const CartContext = createContext();
 
@@ -23,7 +24,7 @@ const CartProvider = ({ children }) => {
     const fetchCart = async () =>  {
       try {
         const response = await fetch(
-          `http://localhost:5500/api/cart/${user.user_id}`
+          `${apiUrl}/api/cart/${user.user_id}`
         );
         const data = await response.json();
       setCart(data.cart);
@@ -67,7 +68,7 @@ const CartProvider = ({ children }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:5500/api/add", {
+      const response = await fetch(`${apiUrl}/api/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +92,7 @@ const CartProvider = ({ children }) => {
 // Update item quantity in cart
 const updateQuantity = async (cart_id, quantity) => {
   try {
-    const response = await fetch(`http://localhost:5500/api/update`, {
+    const response = await fetch(`${apiUrl}/api/update`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -110,7 +111,7 @@ const updateQuantity = async (cart_id, quantity) => {
   const removeFromCart = async (cart_id) => {
     try {
       const response = await fetch(
-        `http://localhost:5500/api/remove/${cart_id}`,
+        `${apiUrl}/api/remove/${cart_id}`,
         {
           method: "DELETE",
         }

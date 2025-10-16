@@ -4,6 +4,8 @@ import AllProducts from "../components/AllProducts";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CartContext } from "../apiRequests/CartProvider";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function ProductsPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ function ProductsPage() {
 
     const saveProductCart = async (product_id) => {
       const productRes = await fetch(
-        `http://localhost:5500/api/product/${product_id}`
+        `${apiUrl}/api/product/${product_id}`
       );
 
       if (!productRes.ok) return;

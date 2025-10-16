@@ -3,6 +3,8 @@ import { Dialog } from "@headlessui/react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../apiRequests/AuthProvider";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function AdminDashboard() {
   const { accessToken } = useContext(AuthContext); // get token
   const [products, setProducts] = useState([]);
@@ -18,7 +20,7 @@ function AdminDashboard() {
 
   // Fetch all products from backend when dashboard loads
   useEffect(() => {
-    fetch("http://localhost:5500/api/allproducts")
+    fetch(`${apiUrl}/api/allproducts`)
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error("Error fetching products:", err));
@@ -45,7 +47,7 @@ function AdminDashboard() {
     formData.append("description", newProduct.description);
     formData.append("image", newProduct.image);
 
-    const res = await fetch("http://localhost:5500/api/allproducts", {
+    const res = await fetch(`${apiUrl}/api/allproducts`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`, // include token
@@ -101,7 +103,7 @@ function AdminDashboard() {
     }
 
     const res = await fetch(
-      `http://localhost:5500/api/allproducts/${editingProduct.product_id}`,
+      `${apiUrl}/api/allproducts/${editingProduct.product_id}`,
       {
         method: "PUT",
         headers: {
@@ -135,7 +137,7 @@ function AdminDashboard() {
 
     try {
       const res = await fetch(
-        `http://localhost:5500/api/allproducts/${product_id}`,
+        `${apiUrl}/api/allproducts/${product_id}`,
         {
           method: "DELETE",
           headers: {

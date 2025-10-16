@@ -1,5 +1,8 @@
 import {useForm} from 'react-hook-form'
 import {NavLink, useNavigate } from "react-router-dom";
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function SignUpPage() {
 
 const{register, handleSubmit, formState:{errors},} = useForm();
@@ -7,7 +10,7 @@ const navigate = useNavigate
 
 const onSubmit = async(data) =>{
   try {
-    const response = await fetch("http://localhost:5500/api/register",{
+    const response = await fetch(`${apiUrl}/api/register`,{
       method: "POST",
       headers:{
         "Content-Type":"application/json",
