@@ -5,8 +5,8 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 function SignUpPage() {
 
-const{register, handleSubmit, formState:{errors},} = useForm();
-const navigate = useNavigate
+const{register, handleSubmit, formState:{errors}, reset} = useForm();
+const navigate = useNavigate();
 
 const onSubmit = async(data) =>{
   try {
