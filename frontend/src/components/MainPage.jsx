@@ -1,5 +1,4 @@
 import React from "react";
-import Vegetables from "../assets/images/Vegetables.jpg";
 import ProductSection from "./ProductSection";
 
 
@@ -14,8 +13,8 @@ function MainPage({linksRef, isActive}) {
         <div className="w-full lg:w-1/2 h-[400px]">
           <img
             className="w-full h-full object-cover rounded-lg shadow-lg"
-            src={Vegetables}
-            alt=""
+            src="/images/Vegetables.jpg"
+            alt="vegetables"
           />
         </div>
         <div className= "w-full px-5 lg:w-1/2">

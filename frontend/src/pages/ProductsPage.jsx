@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ProductsNavbar from "../components/ProductsNavbar";
 import AllProducts from "../components/AllProducts";
 import { useLocation, useNavigate } from "react-router-dom";

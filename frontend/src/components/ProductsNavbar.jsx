@@ -7,7 +7,7 @@ import { useContext, useState } from "react";
 
 function ProductsNavbar({ setSelectedCategory, searchTerm, setSearchTerm }) {
   const navigate = useNavigate();
-  const { logOut } = useContext(AuthContext);
+  const { logOut, user } = useContext(AuthContext);
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -39,7 +39,13 @@ function ProductsNavbar({ setSelectedCategory, searchTerm, setSearchTerm }) {
           />
         </div>
         <div>
-          <ul className="hidden lg:flex gap-6 font-semibold text-lg">
+          <ul className="hidden lg:flex gap-6 font-semibold text-lg ">
+            {user?.role === "admin" && (
+              <li className="hover:text-farmGreen">
+                <NavLink to="/admin">Admin</NavLink>
+              </li>
+            )}
+
             <li className="hover:text-farmGreen">
               <NavLink to="/">Home</NavLink>
             </li>
@@ -112,11 +118,10 @@ function ProductsNavbar({ setSelectedCategory, searchTerm, setSearchTerm }) {
             </li>
             <li>
               <button
-                onClick={ () => {
-                  
+                onClick={() => {
                   logOut(); // Calling the logout function
-                  
-                   navigate("/"); // Redirect after logout
+
+                  navigate("/"); // Redirect after logout
                 }}
                 className="hover:text-farmGreen"
               >
@@ -146,6 +151,11 @@ function ProductsNavbar({ setSelectedCategory, searchTerm, setSearchTerm }) {
             </div>
 
             <ul className="flex flex-col gap-4 font-semibold text-lg ">
+              {user?.role === "admin" && (
+                <li className="hover:text-farmGreen">
+                  <NavLink to="/admin">Admin</NavLink>
+                </li>
+              )}
               <li className="hover:text-farmGreen">
                 <NavLink to="/" onClick={toggleMenu}>
                   Home
@@ -253,16 +263,15 @@ function ProductsNavbar({ setSelectedCategory, searchTerm, setSearchTerm }) {
               </li>
               <li>
                 <button
-                onClick={ () => {
-                  
-                  logOut(); // Calling the logout function
-                  
-                   navigate("/"); // Redirect after logout
-                }}
-                className="hover:text-farmGreen"
-              >
-                Logout
-              </button>
+                  onClick={() => {
+                    logOut(); // Calling the logout function
+
+                    navigate("/"); // Redirect after logout
+                  }}
+                  className="hover:text-farmGreen"
+                >
+                  Logout
+                </button>
               </li>
               <li>
                 <NavLink

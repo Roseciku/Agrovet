@@ -1,63 +1,108 @@
-const db = require("../config/db");
+const supabase = require('../config/supabaseClient');
 const jwt = require("jsonwebtoken");
 
-//Add Item to Cart
+// ADD ITEM TO CART
 exports.addToCart = async (req, res) => {
-  const user_id = req.user.user_id; // verified from the token
-
+  const user_id = req.user.user_id; // verified from token middleware
   const { product_id, quantity } = req.body;
 
   try {
     // Check if item already exists
-    const [existingItem] = await db.execute(
-      "SELECT * FROM cart WHERE user_id = ? AND product_id = ?",
-      [user_id, product_id]
-    );
+    const { data: existingItem, error: existingError } = await supabase
+      .from("cart")
+      .select("*")
+      .eq("user_id", user_id)
+      .eq("product_id", product_id);
 
-    if (existingItem.length > 0) {
-      // Update quantity if product exists
+    if (existingError) {
+      console.error("Error checking existing cart item:", existingError);
+      return res.status(500).json({
+        message: "Error checking existing cart item",
+        error: existingError.message,
+      });
+    }
+
+    if (existingItem && existingItem.length > 0) {
+      // Update quantity
       const newQuantity = existingItem[0].quantity + quantity;
 
-      await db.execute(
-        "UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ?",
-        [newQuantity, user_id, product_id]
-      );
-    } else {
-      // Insert new product in cart
-      await db.execute(
-        "INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)",
-        [user_id, product_id, quantity]
-      );
-    }
-// Return updated full cart
-const [updatedCart] = await db.execute(
-    `SELECT cart.cart_id, cart.quantity, products.name, products.price, products.image
-     FROM cart
-     JOIN products ON cart.product_id = products.product_id
-     WHERE cart.user_id = ?`,
-    [user_id]
-  );
+      const { error: updateError } = await supabase
+        .from("cart")
+        .update({ quantity: newQuantity })
+        .eq("user_id", user_id)
+        .eq("product_id", product_id);
 
-    res.status(200).json({ cart: updatedCart});
+      if (updateError) {
+        console.error("Error updating cart item:", updateError);
+        return res.status(500).json({
+          message: "Error updating cart quantity",
+          error: updateError.message,
+        });
+      }
+    } else {
+      // Insert new item
+      const { error: insertError } = await supabase
+        .from("cart")
+        .insert([{ user_id, product_id, quantity }]);
+
+      if (insertError) {
+        console.error("Error inserting new cart item:", insertError);
+        return res.status(500).json({
+          message: "Error adding product to cart",
+          error: insertError.message,
+        });
+      }
+    }
+
+    // Fetch updated cart
+    const { data: updatedCart, error: fetchError } = await supabase
+      .from("cart")
+      .select(`
+  cart_id,
+  quantity,
+  products ( name, price, image )
+`)
+      .eq("user_id", user_id);
+
+    if (fetchError) {
+      console.error("Error fetching updated cart:", fetchError);
+      return res.status(500).json({
+        message: "Error fetching updated cart",
+        error: fetchError.message,
+      });
+    }
+
+    res.status(200).json({ cart: updatedCart });
   } catch (error) {
     console.error("Error in addToCart:", error.message);
     res.status(500).json({ message: "Error adding to cart", error });
   }
 };
 
-// Get Cart Items for a User
+// GET CART ITEMS FOR A USER
 exports.getCart = async (req, res) => {
-  const { user_id } = req.params; // extracts user_id from the URL parameters(like /cart/:user_id)
+  const { user_id } = req.params;
 
   try {
-    //For every item in the cart, find the matching product in the products table where the product_id in cart matches the id in products.
-    const [cartItems] = await db.execute(
-      `SELECT cart.cart_id, cart.quantity, products.name, products.price, products.image
-       FROM cart
-       JOIN products ON cart.product_id = products.product_id
-       WHERE cart.user_id = ?`,
-      [user_id]
-    );
+    const { data: cartItems, error } = await supabase
+      .from("cart")
+      .select(
+        `
+        cart_id,
+        quantity,
+        products(name, price, image)
+      `
+      )
+      .eq("user_id", user_id);
+
+    if (error) {
+      console.error("Error fetching cart:", error);
+      return res.status(500).json({
+        message: "Error fetching cart",
+        error: error.message,
+      });
+    }
+
     console.log("Cart items fetched from DB:", cartItems);
     res.status(200).json({ cart: cartItems });
   } catch (error) {
@@ -65,92 +110,169 @@ exports.getCart = async (req, res) => {
   }
 };
 
-//Get a single product by ID
+// GET A SINGLE PRODUCT BY ID
 exports.getProduct = async (req, res) => {
   const { product_id } = req.params;
 
   try {
-    const [product] = await db.execute(
-      "SELECT * FROM products WHERE product_id = ?",
-      [product_id]
-    );
+    const { data: product, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("product_id", product_id)
+      .single();
 
-    if (product.length === 0)
+    if (error) {
+      console.error("Error fetching product:", error);
+      return res.status(500).json({
+        message: "Error fetching product",
+        error: error.message,
+      });
+    }
+
+    if (!product) {
       return res.status(404).json({ message: "Product not found" });
-    res.json(product[0]);
+    }
+
+    res.json(product);
   } catch (error) {
-    res.status(500).json({ message: "Error fectching product", error });
+    res.status(500).json({ message: "Error fetching product", error });
   }
 };
 
-//Update Quantity in Cart
+// UPDATE QUANTITY IN CART
 exports.updateCart = async (req, res) => {
   const { cart_id, quantity } = req.body;
 
   try {
-    await db.execute("UPDATE cart SET quantity = ? WHERE cart_id = ?", [
-      quantity,
-      cart_id,
-    ]);
+    const { error: updateError } = await supabase
+      .from("cart")
+      .update({ quantity })
+      .eq("cart_id", cart_id);
 
-    // Get user_id based on cart_id
-    const [[user]] = await db.execute(
-      "SELECT user_id FROM cart WHERE cart_id = ?",
-      [cart_id]
-    );
+    if (updateError) {
+      console.error("Error updating cart:", updateError);
+      return res.status(500).json({
+        message: "Error updating cart",
+        error: updateError.message,
+      });
+    }
 
-    const [updatedCart] = await db.execute(
-      `SELECT cart.cart_id, cart.quantity, products.name, products.price, products.image
-       FROM cart
-       JOIN products ON cart.product_id = products.product_id
-       WHERE cart.user_id = ?`,
-      [user.user_id]
-    );
+    // Get user_id for the updated cart item
+    const { data: userData, error: userError } = await supabase
+      .from("cart")
+      .select("user_id")
+      .eq("cart_id", cart_id)
+      .single();
+
+    if (userError || !userData) {
+      console.error("Error fetching user after update:", userError);
+      return res.status(404).json({ message: "User not found for this cart" });
+    }
+
+    const user_id = userData.user_id;
+
+    // Fetch updated cart
+    const { data: updatedCart, error: fetchError } = await supabase
+      .from("cart")
+      .select(
+        `
+        cart_id,
+        quantity,
+        products(name, price, image)
+      `
+      )
+      .eq("user_id", user_id);
+
+    if (fetchError) {
+      console.error("Error fetching updated cart:", fetchError);
+      return res.status(500).json({
+        message: "Error fetching updated cart",
+        error: fetchError.message,
+      });
+    }
+
     res.status(200).json({ cart: updatedCart });
   } catch (error) {
     res.status(500).json({ message: "Error updating cart", error });
   }
 };
 
-// Remove Item from Cart
+// REMOVE ITEM FROM CART
 exports.removeFromCart = async (req, res) => {
   const { cart_id } = req.params;
 
-   try {
-    // Get user_id first
-    const [[user]] = await db.execute(
-      "SELECT user_id FROM cart WHERE cart_id = ?",
-      [cart_id]
-    );
+  try {
+    // Get user_id for that cart item
+    const { data: userData, error: userError } = await supabase
+      .from("cart")
+      .select("user_id")
+      .eq("cart_id", cart_id)
+      .single();
 
-    const user_id = user?.user_id;
-
-    await db.execute("DELETE FROM cart WHERE cart_id = ?", [cart_id]);
-
-    if (user_id) {
-      const [updatedCart] = await db.execute(
-        `SELECT cart.cart_id, cart.quantity, products.name, products.price, products.image
-         FROM cart
-         JOIN products ON cart.product_id = products.product_id
-         WHERE cart.user_id = ?`,
-        [user_id]
-      );
-
-      res.status(200).json({ cart: updatedCart });
-    } else {
-      res.status(404).json({ message: "User/cart not found" });
+    if (userError || !userData) {
+      return res.status(404).json({ message: "User/cart not found" });
     }
+
+    const user_id = userData.user_id;
+
+    // Delete cart item
+    const { error: deleteError } = await supabase
+      .from("cart")
+      .delete()
+      .eq("cart_id", cart_id);
+
+    if (deleteError) {
+      console.error("Error deleting cart item:", deleteError);
+      return res.status(500).json({
+        message: "Error removing item from cart",
+        error: deleteError.message,
+      });
+    }
+
+    // Fetch updated cart
+    const { data: updatedCart, error: fetchError } = await supabase
+      .from("cart")
+      .select(
+        `
+        cart_id,
+        quantity,
+        products(name, price, image)
+      `
+      )
+      .eq("user_id", user_id);
+
+    if (fetchError) {
+      console.error("Error fetching updated cart:", fetchError);
+      return res.status(500).json({
+        message: "Error fetching updated cart",
+        error: fetchError.message,
+      });
+    }
+
+    res.status(200).json({ cart: updatedCart });
   } catch (error) {
     res.status(500).json({ message: "Error removing item", error });
   }
 };
 
-// Clear Entire Cart
+// CLEAR ENTIRE CART
 exports.clearCart = async (req, res) => {
   const { user_id } = req.params;
 
   try {
-    await db.execute("DELETE FROM cart WHERE user_id = ?", [user_id]);
+    const { error } = await supabase
+      .from("cart")
+      .delete()
+      .eq("user_id", user_id);
+
+    if (error) {
+      console.error("Error clearing cart:", error);
+      return res.status(500).json({
+        message: "Error clearing cart",
+        error: error.message,
+      });
+    }
+
     res.status(200).json({ cart: [] });
   } catch (error) {
     res.status(500).json({ message: "Error clearing cart", error });

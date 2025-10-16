@@ -124,7 +124,7 @@ const updateQuantity = async (cart_id, quantity) => {
   };
 
   const subtotal = cart.reduce(
-  (acc, item) => acc + item?.price * item?.quantity,
+  (acc, item) => acc + Number(item?.products?.price) * Number(item?.quantity),
   0
 );
 const shippingFee = 5.0;
@@ -133,7 +133,7 @@ const orderTotal = subtotal + shippingFee + tax;
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, updateQuantity, loading, subtotal,shippingFee,tax, orderTotal }}
+      value={{ cart, addToCart, removeFromCart, updateQuantity, loading, subtotal, shippingFee, tax, orderTotal }}
     >
       {children}
     </CartContext.Provider>

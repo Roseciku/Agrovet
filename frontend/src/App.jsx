@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage'
 import CartPage from './pages/CartPage'
 import Layout from './apiRequests/Layout'
 import CheckOutPage from './pages/CheckOutPage'
+import AdminDashboard from './pages/AdminDashboard'
 
 
 
@@ -27,6 +28,7 @@ function App() {
     <Route path="/login" element={<LoginPage />} />
     <Route path="/cart" element={<CartPage />} />
     <Route path="/checkout" element={<CheckOutPage />} />
+    <Route path="/admin" element={<AdminDashboard />} />
     </Route>
     </Routes>
   )

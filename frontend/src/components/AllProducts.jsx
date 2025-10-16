@@ -61,7 +61,7 @@ const filteredProducts = products.filter((product) => {
       <ul className='flex flex-wrap gap-4 p-4 font-poppins justify-center'>
         {filteredProducts.map((product) => (
           <li key={product.product_id}  className='border p-4 w-full sm:w-[30%] md:w-[31%] lg:w-[18%] bg-white rounded-xl shadow'>
-            <img src={`http://localhost:5500${product.image}`} alt={product.name} className='w-[100px] h-[100px] md:w-[150px] md:h-[150px] lg:w-[200px] lg:h-[200px]' />
+            <img src={product.image} alt={product.name} className='w-[100px] h-[100px] md:w-[150px] md:h-[150px] lg:w-[200px] lg:h-[200px]' />
             <h2 className='text-sm md:text-md lg:text-md'>{product.name}</h2>
             <p className='font-bold text-sm md:text-md lg:text-md'>Ksh {product.price}</p>
             <p className={`text-sm md:text-md lg:text-md w-full transition-all duration-300 ease-in-out ${expandedDescriptions[product.product_id] ? "whitespace-normal" : "truncate"}`}>

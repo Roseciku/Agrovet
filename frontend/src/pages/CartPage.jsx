@@ -6,7 +6,7 @@ import { AuthContext } from "../apiRequests/AuthProvider";
 
 
 const CartPage = () => {
-  const { cart, removeFromCart, loading } = useContext(CartContext);
+  const { cart, removeFromCart, loading, subtotal, tax, orderTotal, shippingFee } = useContext(CartContext);
   const { user } = useContext(AuthContext); // Get current user
 
 // If not logged in
@@ -26,16 +26,6 @@ const CartPage = () => {
 
   // If cart is loading
 
-  if (loading) return <p>Loading cart...</p>;
-
-  const subtotal = cart.reduce(
-    (acc, item) => acc + item?.price * item?.quantity,
-    0
-  );
-  const shippingFee = 5.0;
-  const tax = subtotal * 0.1;
-  const orderTotal = subtotal + shippingFee + tax;
-
   if (cart.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4">
@@ -52,6 +42,7 @@ const CartPage = () => {
       </div>
     );
   } 
+  //Product details are nested inside products, not at the top level. So instead of item.name, it’s actually item.products.name.
   return (
     <div className="w-full p-6">
       <h2 className="text-3xl font-bold text-center">Shopping Cart</h2>
@@ -64,22 +55,22 @@ const CartPage = () => {
             >
               <div>
                 <img
-                  src={`http://localhost:5500${item?.image}`}
-                  alt={item?.name}
+                  src={item?.products?.image?.trim()} // remove any stray newline from Supabase path
+  alt={item?.products?.name}
                   className="h-20 w-20 mb-2"
                 />
-                <p>{item?.name}</p>
+                <p>{item?.products?.name}</p>
               </div>
               <div>
-                <p>Qty: {item?.quantity}</p>
+                <p>Qty: {item.quantity}</p>
                 <button
-                  onClick={() => removeFromCart(item?.cart_id)}
+                  onClick={() => removeFromCart(item.cart_id)}
                   className="bg-red-500 text-white px-2"
                 >
                   Remove
                 </button>
               </div>
-              <div>Ksh{(item?.price * item?.quantity).toFixed(2)}</div>
+              <div>Ksh{(Number(item?.products?.price) * Number(item?.quantity)).toFixed(2)}</div>
             </div>
           ))}
         </div>

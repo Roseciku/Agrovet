@@ -10,7 +10,9 @@ function CheckOutPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 font-poppins">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8">
-        <h2 className="text-3xl font-bold text-center text-farmGreen mb-6">Checkout</h2>
+        <h2 className="text-3xl font-bold text-center text-farmGreen mb-6">
+          Checkout
+        </h2>
 
         {/* Back to Cart */}
         <div className="mb-6 text-right">
@@ -27,13 +29,19 @@ function CheckOutPage() {
           Pay with MPesa
         </button>
 
-        <p className="text-center text-sm text-gray-500 font-semibold mb-6">or fill card details below</p>
+        <p className="text-center text-sm text-gray-500 font-semibold mb-6">
+          or fill card details below
+        </p>
 
         <form className="space-y-6">
           {/* Contact Information */}
           <div>
-            <h3 className="text-lg font-bold text-farmGreen mb-2">Contact Information</h3>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <h3 className="text-lg font-bold text-farmGreen mb-2">
+              Contact Information
+            </h3>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
             <input
               type="email"
               {...register("email", { required: "Email is required" })}
@@ -43,18 +51,26 @@ function CheckOutPage() {
 
           {/* Payment Details */}
           <div>
-            <h3 className="text-lg font-bold text-farmGreen mb-2">Payment Details</h3>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+            <h3 className="text-lg font-bold text-farmGreen mb-2">
+              Payment Details
+            </h3>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Card Number
+            </label>
             <input
               type="text"
-              {...register("cardnumber", { required: "Card number is required" })}
+              {...register("cardnumber", {
+                required: "Card number is required",
+              })}
               className="w-full border rounded-lg py-2 px-3"
             />
           </div>
 
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Expiry Date
+              </label>
               <input
                 type="month"
                 {...register("date", { required: "Expiry date is required" })}
@@ -63,7 +79,9 @@ function CheckOutPage() {
             </div>
 
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                CVC
+              </label>
               <input
                 type="number"
                 {...register("cvc", { required: "CVC is required" })}
@@ -74,8 +92,12 @@ function CheckOutPage() {
 
           {/* Shipping Address */}
           <div>
-            <h3 className="text-lg font-bold text-farmGreen mb-2">Shipping Address</h3>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Town / Address</label>
+            <h3 className="text-lg font-bold text-farmGreen mb-2">
+              Shipping Address
+            </h3>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Town / Address
+            </label>
             <input
               type="text"
               {...register("address", { required: "Address is required" })}
@@ -88,7 +110,12 @@ function CheckOutPage() {
             type="submit"
             className="w-full bg-brightYellow text-white font-bold text-lg py-4 rounded-xl shadow hover:bg-yellow-500 transition"
           >
-            Pay Ksh {orderTotal.toFixed(2)}
+            Pay{" "}
+            {new Intl.NumberFormat("en-KE", {
+              style: "currency",
+              currency: "KES",
+              minimumFractionDigits: 2,
+            }).format(orderTotal)}
           </button>
         </form>
       </div>

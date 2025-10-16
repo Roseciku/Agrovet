@@ -1,53 +1,47 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import AnimalFeeds from "../assets/images/AnimalFeeds.jpg";
-import VetServices from "../assets/images/VetServices.jpg";
-import FarmEquipment from "../assets/images/FarmEquipment.jpg";
-import ConsultationServices from "../assets/images/ConsultationServices.jpg";
-import PetFeeds from "../assets/images/PetFeeds.jpg";
-import Pesticides from "../assets/images/Pesticides.jpg";
-import Fertilizer from "../assets/images/Fertilizer.jpg";
+
 
 const products = [
   {
-    image: Fertilizer,
+    image: "/images/Fertilizer.jpg",
     title: "Premium Fertilizer",
     description:
       "Boost your crop yield with our high-quality organic fertilizer.",
   },
 
   {
-    image: AnimalFeeds,
+    image: "/images/AnimalFeeds.jpg",
     title: "Animal Feeds",
     description:
       "Ensure your livestock gets the best nutrition with our top-quality feeds.",
   },
   {
-    image: FarmEquipment,
+    image: "/images/FarmEquipment.jpg",
     title: "Farm Equipment",
     description:
       "High-quality tools and machinery to enhance farm productivity, from plows and sprayers to irrigation systems.",
   },
   {
-    image: PetFeeds,
+    image: "/images/PetFeeds.jpg",
     title: "Pet Feeds",
     description:
       "Nutritionally balanced feeds tailored for pets, ensuring their health, growth, and energy needs are met.",
   },
   {
-    image: Pesticides,
+    image: "/images/Pesticides.jpg",
     title: "Pesticides",
     description:
       "Effective and safe solutions for pest control, protecting your crops and livestock from harmful infestations.",
   },
   {
-    image: ConsultationServices,
+    image: "/images/ConsultationServices.jpg",
     title: "Consultation Services",
     description:
       "Expert agricultural advice to help you maximize yields, improve soil health, and manage pests efficiently.",
   },
   {
-    image: VetServices,
+    image: "/images/VetServices.jpg",
     title: " Vet Services",
     description:
       "Professional veterinary care to keep your livestock and pets healthy, including checkups, vaccinations, and disease management.",
@@ -77,7 +71,7 @@ function ProductSection() {
 
   React.useEffect(() => {
     const slideInterval = setInterval(nextSlide, 4000);
-    return () => clearInterval(slideInterval); // stops the timer when the component is remoned from screen to avoid memory leaks(unnecessary memory usage)
+    return () => clearInterval(slideInterval); // stops the timer when the component is removed from screen to avoid memory leaks(unnecessary memory usage)
   }, []); // the empty depency array means the effect runs only once when the component loads and not on every re-render. Otherwise if we didn't include it would cause the effect to run again and again creating multiple timers and messing the slide show
   // If we put currentIndex inside [currentIndex], a new timer would start every time the slide changes, creating too many timers running at the same time!
 
