@@ -60,8 +60,8 @@ exports.addProduct = async (req, res) => {
 
     // Upload image to Supabase Storage
     const filePath = file.path;
-    const bucketName = 'product-images';
-    const fileName = `images/${file.filename}`; // already unique from multer
+    const bucketName = 'product-images'; // supabase bucket name
+    const fileName = `images/${file.filename}`; // adding folder path in bucket
     const fileStream = fs.createReadStream(filePath);
 
     const { error: uploadError } = await supabase.storage
@@ -80,7 +80,7 @@ exports.addProduct = async (req, res) => {
     }
 
     // Construct public URL
-    const publicURL = `${process.env.SUPABASE_URL}/storage/v1/object/public/${bucketName}/${encodeURIComponent(
+    const publicURL = `${SUPABASE_SERVICE_ROLE_KEY}/storage/v1/object/public/${bucketName}/${encodeURIComponent(
       fileName
     )}`;
 
