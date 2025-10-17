@@ -64,13 +64,14 @@ exports.addProduct = async (req, res) => {
     const fileName = `images/${file.filename}`; // adding folder path in bucket
     const fileStream = fs.createReadStream(filePath);
 
+    console.log("Uploading to:", `${bucketName}/${fileName}`);
     const { error: uploadError } = await supabase.storage
       .from(bucketName)
       .upload(fileName, fileStream, {
         contentType: file.mimetype,
         upsert: false,
       });
-      console.log("Uploading to:", `${bucketName}/${fileName}`);
+      
     // remove local file after upload
     fs.unlink(filePath, () => {});
 
