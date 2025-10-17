@@ -62,12 +62,13 @@ exports.addProduct = async (req, res) => {
     const filePath = file.path;
     const bucketName = 'product-images'; // supabase bucket name
     const fileName = `images/${file.filename}`; // adding folder path in bucket
-    const fileStream = fs.createReadStream(filePath);
+    const fileBuffer = fs.readFileSync(filePath);
 
     console.log("Uploading to:", `${bucketName}/${fileName}`);
+
     const { error: uploadError } = await supabase.storage
       .from(bucketName)
-      .upload(fileName, fileStream, {
+      .upload(fileName, fileBuffer, {
         contentType: file.mimetype,
         upsert: false,
       });
@@ -81,9 +82,8 @@ exports.addProduct = async (req, res) => {
     }
 
     // Construct public URL
-    const publicURL = `${process.env.SUPABASE_URL}/storage/v1/object/public/${bucketName}/${encodeURIComponent(
-      fileName
-    )}`;
+    const publicURL = `${process.env.SUPABASE_URL}/storage/v1/object/public/${bucketName}/${
+      fileName }`;
 
     // Insert product into database
     const { data: insertedProduct, error: insertError } = await supabase
