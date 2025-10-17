@@ -43,7 +43,7 @@ exports.registerUser = async (req, res) => {
       role && role.toLowerCase() === "admin" ? "admin" : "user";
 
     // Insert new user
-    const { error: insertError } = await supabase
+    const {  error: insertError } = await supabase
       .from("users")
       .insert([{ name, email, password: hashedPassword, role: userRole }]);
 
@@ -57,7 +57,7 @@ exports.registerUser = async (req, res) => {
 
     return res.status(201).json({
        message: "User registered successfully!" ,
-      user: data[0]
+    
       });
   } catch (error) {
     console.error("Error registering user:", error);
