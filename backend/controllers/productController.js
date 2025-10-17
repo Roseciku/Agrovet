@@ -70,7 +70,7 @@ exports.addProduct = async (req, res) => {
         contentType: file.mimetype,
         upsert: false,
       });
-
+      console.log("Uploading to:", `${bucketName}/${fileName}`);
     // remove local file after upload
     fs.unlink(filePath, () => {});
 
