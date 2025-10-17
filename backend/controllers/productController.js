@@ -81,7 +81,7 @@ exports.addProduct = async (req, res) => {
     }
 
     // Construct public URL
-    const publicURL = `${SUPABASE_SERVICE_ROLE_KEY}/storage/v1/object/public/${bucketName}/${encodeURIComponent(
+    const publicURL = `${process.env.SUPABASE_URL}/storage/v1/object/public/${bucketName}/${encodeURIComponent(
       fileName
     )}`;
 
