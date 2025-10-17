@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { NavLink } from "react-router-dom";
 
 const products = [
   {
@@ -145,7 +145,7 @@ function ProductSection() {
         </div>
       </div>
       <button className=" flex mx-auto mt-5 justify-center items-center text-center font-poppins cursor-pointer px-5 bg-brightYellow w-[200px] h-[30px] text-white text-lg">
-        Shop Now
+       <NavLink to= "/login">Shop Now</NavLink>
       </button>
 
       

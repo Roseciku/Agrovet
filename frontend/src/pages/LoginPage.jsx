@@ -40,7 +40,7 @@ const onSubmit = async(data) => {
       <form onSubmit={handleSubmit(onSubmit)} className='font-poppins'> 
         <h2 className='text-3xl text-center font-semibold mb-6'>Log In</h2>
         <div className='mb-4'>
-            <label htmlFor="email" className='block text-gray-700 font-bold mb-2'>Username</label>
+            <label htmlFor="email" className='block text-gray-700 font-bold mb-2'>Email</label>
             <input
              type="text"
             {...register("email",{required:"Email is required" })}
